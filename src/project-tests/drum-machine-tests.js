@@ -1,8 +1,16 @@
 import { assert } from 'chai';
 import { frontEndLibrariesStack } from '../utils/shared-test-strings';
 
+
 // DRUM MACHINE TESTS:
 export default function createDrumMachineTests() {
+  // mute all elements
+  var currentVolume;
+  document.querySelectorAll('audio').forEach(e => {
+    currentVolume = e.volume;
+    e.volume = 0;
+  });
+
   describe('#Drum Machine tests', function () {
     // vars:
     const drumPads = document.querySelectorAll('.drum-pad');
@@ -46,11 +54,6 @@ export default function createDrumMachineTests() {
     });
 
     describe('#Tests', function () {
-      after(function () {
-        audioElements.forEach(function (el) {
-          el.pause();
-        });
-      });
       it(`I should be able to see an outer container with a
       corresponding id="drum-machine" that contains all other elements`, function () {
         assert.isNotNull(document.getElementById('drum-machine'));
@@ -141,7 +144,6 @@ export default function createDrumMachineTests() {
           'Audio elements do not exist '
         );
         audioElements.forEach((el) => {
-          el.pause();
           __triggerClickEventCaller(el.parentElement);
           assert.isFalse(
             el.paused,
@@ -167,7 +169,6 @@ export default function createDrumMachineTests() {
         );
 
         audioElements.forEach((el, i) => {
-          el.pause();
           __triggerEvent(el.parentElement, 'keydown', keyCodes[i]);
           __triggerEvent(el.parentElement, 'keypress', keyCodes[i]);
           __triggerEvent(el.parentElement, 'keyup', keyCodes[i]);
@@ -175,7 +176,6 @@ export default function createDrumMachineTests() {
             el.paused,
             'No audio plays when the ' + el.id + ' key is pressed '
           );
-          el.pause();
         });
       });
 
@@ -201,6 +201,9 @@ export default function createDrumMachineTests() {
 
     // END #DrumMachineTests
   });
+
+  //unmute all elements
+  document.querySelectorAll('audio').forEach(e => e.volume = currentVolume);
 
   // END createDrumMachineTests()
 }
